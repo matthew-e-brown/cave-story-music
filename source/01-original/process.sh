@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-SRC_DIR="org-source"
-OUT_DIR="ogg-ready"  # "ready" to be processed into final file with metadata
+SRC_DIR="org-source"    # Original `.org` files from the game go in here
+OUT_DIR="ogg-ready"     # "Ready" to be processed `.ogg` files will be put here
 
 # https://stackoverflow.com/a/246128/10549827
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )

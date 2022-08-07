@@ -24,8 +24,8 @@ const fs = require('fs/promises');
     }
 
     const wait  = buff.readUint16LE(offset); offset += 2;
-    const _bpm  = buff.readUInt8(offset); offset += 1;
-    const _spb  = buff.readUint8(offset); offset += 1;
+    /* const _bpm  = buff.readUInt8(offset); */ offset += 1;
+    /* const _spb  = buff.readUint8(offset); */ offset += 1;
     const start = buff.readInt32LE(offset); offset += 4;
     const end   = buff.readInt32LE(offset); offset += 4;
 
