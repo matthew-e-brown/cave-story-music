@@ -3,12 +3,16 @@ const cp = require('child_process');
 const path = require('path');
 
 /**
- * @param {string} srcDir The directory to pull the `.org` files out of.
- * @param {string} outDir The directory to put the `.ogg` files into.
- * @param {number} fadeDelay How long into the third play-through (2nd loop) the fade should start.
+ * @param {number} totalPlays How many times the song should loop before fading. Two loops means
+ * that the main body of the song will play twice *total*.
+ * @param {number} fadeDelay How long into the loops+1'th play-through the fade should start.
  * @param {number} fadeDuration How long the fade should take.
+ * @param {string} logPrefix String to be put in front of every call to `console.log`.
  */
-async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
+async function process(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefix = '') {
+
+    const srcDir = path.join(__dirname, './org-source');
+    const outDir = path.join(__dirname, './ogg-ready');
 
     // Re-create the output directory just in case we are re-doing a fuck-up
     try {
@@ -33,6 +37,9 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
 
     let finished = 0;
     const total = orgFiles.length;
+
+    // Each one is going to have to listen to the main program to see if it should get terminated
+    global.process.setMaxListeners(orgFiles.length);
 
     // Process all files concurrently
     await Promise.all(orgFiles.map(async fileName => {
@@ -64,7 +71,7 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
 
         let fadeStart =
             (44100.0 / 1000.0 * wait)                   // frames per tick
-            * (start + (end - start) * 2)               // total number of ticks
+            * (start + (end - start) * totalPlays)      // total number of ticks
             / 44100.0                                   // ticks per second
             + fadeDelay;                                // `n` seconds after that
         let fadeEnd = fadeStart + fadeDuration;
@@ -76,7 +83,7 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
         // Spawn child processes
         // --------------------------
 
-        console.log(`Spawning child processes for ${baseName}...`);
+        console.log(`${logPrefix} Spawning child processes for ${baseName}...`);
 
         // Convert to PCM...
         const organism = cp.spawn('cargo', [
@@ -85,8 +92,8 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
             '--locked',
             '--manifest-path', path.join(__dirname, '../../tools/organism/Cargo.toml'),
             '--',
-            fullName,
-            '2',
+            fullName,               // .org file to convert to raw data
+            totalPlays.toString(),  // *Loops* parameter, not *plays* parameter, so no +1
         ], {
             stdio: [ 'ignore', 'pipe', 'ignore' ],
             windowsHide: true,
@@ -122,6 +129,12 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
         ffmpeg.on('exit', stop);
         ffmpeg.on('error', stop);
 
+        // If this process dies, send SIGINT to both children
+        global.process.on('exit', () => {
+            organism.kill('SIGINT');
+            ffmpeg.kill('SIGINT');
+        });
+
         // "Join"
         await Promise.allSettled([
             new Promise((resolve, reject) => {
@@ -134,20 +147,10 @@ async function process(srcDir, outDir, fadeDelay = 2, fadeDuration = 8) {
             }),
         ]);
 
-        console.log(`Child processes for ${baseName} completed (${++finished}/${total}).`);
+        console.log(`${logPrefix} Child processes for ${baseName} completed (${++finished}/${total}).`);
     }));
 }
 
 
-if (require.main === module) {
-    process(
-        path.join(__dirname, './org-source'),
-        path.join(__dirname, './ogg-ready'),
-    );
-}
-
-else {
-    module.exports = {
-        process,
-    };
-}
+if (require.main === module) process();
+else module.exports = { process };
