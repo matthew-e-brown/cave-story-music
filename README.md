@@ -14,6 +14,13 @@ Also cuz I was bored.
 - Node installed and on PATH
 
 
+## Usage
+
+Run `1-prepare.sh` to convert the raw files into `.ogg` files. Then run
+`2-convert.py` to convert those `.ogg` files into the desired final form with
+metadata.
+
+
 ## Where to get the audio files from
 
 ### Original
@@ -29,7 +36,7 @@ Even though we're going to rename them to use the internal names, we use the
 tribute site's versions because they have done some work on the `.org` files to
 make the percussion sound correct.
 
-`trim.sh` uses [Organism](https://gitdab.com/LunarLambda/organism) to convert
+`process.sh` uses [Organism](https://gitdab.com/LunarLambda/organism) to convert
 `.org` files into raw PCM data for FFmpeg to handle.
 
 
