@@ -1,0 +1,187 @@
+{
+    "__common__": {
+        "artist": "Danny Baranowsky",
+        "composer": "天谷 大輔",
+        "album": "Cave Story Soundtrack Collection",
+        "compilation": "1",
+        "genre": "Game",
+        "disc": "3/3",
+        "date": "2011-11-08"
+    },
+    "access": {
+        "title": "Access (Remastered)",
+        "track": "1"
+    },
+    "vivi": {
+        "title": "Gestation (Remastered)",
+        "track": "2"
+    },
+    "mura": {
+        "title": "Mimiga Town (Remastered)",
+        "track": "3"
+    },
+    "plant": {
+        "title": "Plant (Remastered)",
+        "track": "4"
+    },
+    "ginsuke": {
+        "title": "Balrog's Theme (Remastered)",
+        "track": "5"
+    },
+    "gravity": {
+        "title": "Gravity (Remastered)",
+        "track": "6"
+    },
+    "cemetery": {
+        "title": "Cemetery (Remastered)",
+        "track": "7"
+    },
+    "anzen": {
+        "title": "Safety (Remastered)",
+        "track": "8"
+    },
+    "wanpaku": {
+        "title": "Mischievous Robot (Remastered)",
+        "track": "9"
+    },
+    "kodou": {
+        "title": "Pulse (Remastered)",
+        "track": "10"
+    },
+    "weed": {
+        "title": "On to Grasstown (Remastered)",
+        "track": "11"
+    },
+    "fireeye": {
+        "title": "Eyes of Flame (Remastered)",
+        "track": "12"
+    },
+    "mdown2": {
+        "title": "Meltdown 2 (Remastered)",
+        "track": "13"
+    },
+    "dr": {
+        "title": "Tyrant (Remastered)",
+        "track": "14"
+    },
+    "escape": {
+        "title": "Run! (Remastered)",
+        "track": "15"
+    },
+    "jenka": {
+        "title": "Jenka 1 (Remastered)",
+        "track": "16"
+    },
+    "jenka2": {
+        "title": "Jenka 2 (Remastered)",
+        "track": "17"
+    },
+    "maze": {
+        "title": "Labyrinth Fight (Remastered)",
+        "track": "18"
+    },
+    "grand": {
+        "title": "Geothermal (Remastered)",
+        "track": "19"
+    },
+    "ironh": {
+        "title": "Oppression (Remastered)",
+        "track": "20"
+    },
+    "marine": {
+        "title": "Living Waterway (Remastered)",
+        "track": "21"
+    },
+    "quiet": {
+        "title": "Quiet (Remastered)",
+        "track": "22"
+    },
+    "wanpak2": {
+        "title": "Scorching Back (Remastered)",
+        "track": "23"
+    },
+    "oside": {
+        "title": "Moonsong (Remastered)",
+        "track": "24"
+    },
+    "requiem": {
+        "title": "Hero's End (Remastered)",
+        "track": "25"
+    },
+    "curly": {
+        "title": "Cave Story (Theme Song) [Remastered]",
+        "track": "26"
+    },
+    "lastcave": {
+        "title": "Last Cave (Remastered)",
+        "track": "27"
+    },
+    "balcony": {
+        "title": "Balcony (Remastered)",
+        "track": "28"
+    },
+    "lastbtl": {
+        "title": "Charge (Remastered)",
+        "track": "29"
+    },
+    "zonbie": {
+        "title": "Zombie (Remastered)",
+        "track": "30"
+    },
+    "lastbt3": {
+        "title": "Last Battle (Remastered)",
+        "track": "31"
+    },
+    "breadown": {
+        "title": "Break Down (Remastered)",
+        "track": "32"
+    },
+    "hell": {
+        "title": "Running Hell (Remastered)",
+        "track": "33"
+    },
+    "ballos": {
+        "title": "Seal Chamber (Remastered)",
+        "track": "34"
+    },
+    "ending": {
+        "title": "The Way Back Home (Remastered)",
+        "track": "35"
+    },
+    "toroko": {
+        "title": "Toroko's Theme (Remastered)",
+        "track": "36"
+    },
+    "white": {
+        "title": "White (Remastered)",
+        "track": "37"
+    },
+    "kaze": {
+        "title": "Wind Fortress (Remastered)",
+        "track": "38"
+    },
+    "lastcave2": {
+        "title": "Last Cave (Hidden Version) [Remastered]",
+        "track": "39"
+    },
+    "wanpaku_ending": {
+        "title": "The Way Back Home (Hidden Version) [Remastered]",
+        "track": "40"
+    },
+    "fanfale1": {
+        "title": "Got Item! (Remastered)",
+        "track": "41"
+    },
+    "fanfale2": {
+        "title": "Get Heart Tank! (Remastered)",
+        "track": "42"
+    },
+    "fanfale3": {
+        "title": "Victory! (Remastered)",
+        "track": "43"
+    },
+    "gameover": {
+        "title": "Game Over (Remastered)",
+        "track": "44"
+    }
+}

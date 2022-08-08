@@ -1,5 +1,3 @@
 # Ignore potentially copywritten audio files
-*.org
-*.ogg
-*.pcm
-*.flac
+/flac-output
+/.vscode

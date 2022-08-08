@@ -16,9 +16,7 @@ Also cuz I was bored.
 
 ## Usage
 
-Run `1-prepare.sh` to convert the raw files into `.ogg` files. Then run
-`2-convert.py` to convert those `.ogg` files into the desired final form with
-metadata.
+TODO
 
 
 ## Where to get the audio files from
@@ -30,13 +28,13 @@ Download the original `.org` tracks from the Cave Story fan website. Delete
 track-name list to manually rename the files to the right thing.
 
 - https://www.cavestory.org/download/music.php
-- https://www.cavestory.org/game-info/internal-track-names.php.
+- https://www.cavestory.org/game-info/internal-track-names.php
 
 Even though we're going to rename them to use the internal names, we use the
 tribute site's versions because they have done some work on the `.org` files to
 make the percussion sound correct.
 
-`process.sh` uses [Organism](https://gitdab.com/LunarLambda/organism) to convert
+`convert.js` uses [Organism](https://gitdab.com/LunarLambda/organism) to convert
 `.org` files into raw PCM data for FFmpeg to handle.
 
 

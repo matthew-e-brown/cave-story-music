@@ -2,6 +2,10 @@ const fs = require('fs/promises');
 const cp = require('child_process');
 const path = require('path');
 
+const metadata = require('./metadata.json');
+const { makeMetadata } = require('../../tools/utils');
+
+
 /**
  * @param {number} totalPlays How many times the song should loop before fading. Two loops means
  * that the main body of the song will play twice *total*.
@@ -9,26 +13,13 @@ const path = require('path');
  * @param {number} fadeDuration How long the fade should take.
  * @param {string} logPrefix String to be put in front of every call to `console.log`.
  */
-async function process(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefix = '') {
+async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefix = '') {
 
     const srcDir = path.join(__dirname, './org-source');
-    const outDir = path.join(__dirname, './ogg-ready');
+    const outDir = path.join(__dirname, '../../flac-output/1-original');
 
-    // Re-create the output directory just in case we are re-doing a fuck-up
-    try {
-        const existing = await fs.readdir(outDir);
-        await Promise.all(existing.map(entry => {
-            const fullName = path.join(outDir, entry);
-            return fs.unlink(fullName);
-        }));
-    } catch (err) {
-        // If the folder doesn't exist, make it.
-        if (err.code == 'ENOENT' && err.path == outDir) {
-            await fs.mkdir(outDir);
-        } else {
-            throw err;
-        }
-    }
+    // If the output directory doesn't exist, make it
+    await fs.mkdir(outDir, { recursive: true });
 
     // Read the input directory
     const orgFiles = await fs.readdir(srcDir, { withFileTypes: true })
@@ -39,13 +30,14 @@ async function process(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
     const total = orgFiles.length;
 
     // Each one is going to have to listen to the main program to see if it should get terminated
-    global.process.setMaxListeners(orgFiles.length);
+    if (global.process.getMaxListeners() < orgFiles.length)
+        global.process.setMaxListeners(orgFiles.length);
 
     // Process all files concurrently
     await Promise.all(orgFiles.map(async fileName => {
         const fullName = path.join(srcDir, fileName);
         const baseName = path.basename(fileName);
-        const destPath = path.join(outDir, baseName.replace(/\.org$/, '.ogg'));
+        const destPath = path.join(outDir, baseName.replace(/\.org$/, '.flac'));
 
         // Read the first couple bytes to determine the looping size
         const buff = Buffer.alloc(18);
@@ -109,7 +101,11 @@ async function process(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
             '-s', '0',                                              // start at zero
             '-t', fadeEnd.toString(),                               // finish where the fade stops
             '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`, // add the fade
-            destPath,                                               // output to .ogg file
+            ...makeMetadata(
+                metadata['__common__'],
+                metadata[baseName.replace(/\.o[rg]g$/, '').toLowerCase()]
+            ),
+            destPath,                                               // output to .flac file
         ], {
             stdio: [ 'pipe', 'ignore', 'ignore' ],
             windowsHide: true,
@@ -152,5 +148,5 @@ async function process(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
 }
 
 
-if (require.main === module) process();
-else module.exports = { process };
+if (require.main === module) convert();
+else module.exports = { convert };

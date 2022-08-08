@@ -1,0 +1,201 @@
+{
+    "__common__": {
+        "artist": "天谷 大輔",
+        "composer": "天谷 大輔",
+        "album": "Cave Story Soundtrack Collection",
+        "compilation": "1",
+        "genre": "Game",
+        "disc": "1/3",
+        "date": "2004-12-20"
+    },
+    "access": {
+        "title": "Access",
+        "track": "1"
+    },
+    "vivi": {
+        "title": "Gestation",
+        "track": "2"
+    },
+    "mura": {
+        "title": "Mimiga Town",
+        "track": "3"
+    },
+    "plant": {
+        "title": "Plant",
+        "track": "4"
+    },
+    "ginsuke": {
+        "title": "Balrog's Theme",
+        "track": "5"
+    },
+    "gravity": {
+        "title": "Gravity",
+        "track": "6"
+    },
+    "cemetery": {
+        "title": "Cemetery",
+        "track": "7"
+    },
+    "anzen": {
+        "title": "Safety",
+        "track": "8"
+    },
+    "wanpaku": {
+        "title": "Mischievous Robot",
+        "track": "9"
+    },
+    "kodou": {
+        "title": "Pulse",
+        "track": "10"
+    },
+    "weed": {
+        "title": "On to Grasstown",
+        "track": "11"
+    },
+    "fireeye": {
+        "title": "Eyes of Flame",
+        "track": "12"
+    },
+    "mdown2": {
+        "title": "Meltdown 2",
+        "track": "13"
+    },
+    "dr": {
+        "title": "Tyrant",
+        "track": "14"
+    },
+    "escape": {
+        "title": "Run!",
+        "track": "15"
+    },
+    "jenka": {
+        "title": "Jenka 1",
+        "track": "16"
+    },
+    "jenka2": {
+        "title": "Jenka 2",
+        "track": "17"
+    },
+    "maze": {
+        "title": "Labyrinth Fight",
+        "track": "18"
+    },
+    "grand": {
+        "title": "Geothermal",
+        "track": "19"
+    },
+    "ironh": {
+        "title": "Oppression",
+        "track": "20"
+    },
+    "marine": {
+        "title": "Living Waterway",
+        "track": "21"
+    },
+    "quiet": {
+        "title": "Quiet",
+        "track": "22"
+    },
+    "wanpak2": {
+        "title": "Scorching Back",
+        "track": "23"
+    },
+    "oside": {
+        "title": "Moonsong",
+        "track": "24"
+    },
+    "requiem": {
+        "title": "Hero's End",
+        "track": "25"
+    },
+    "curly": {
+        "title": "Cave Story (Theme Song)",
+        "track": "26"
+    },
+    "lastcave": {
+        "title": "Last Cave",
+        "track": "27"
+    },
+    "balcony": {
+        "title": "Balcony",
+        "track": "28"
+    },
+    "lastbtl": {
+        "title": "Charge",
+        "track": "29"
+    },
+    "zonbie": {
+        "title": "Zombie",
+        "track": "30"
+    },
+    "lastbt3": {
+        "title": "Last Battle",
+        "track": "31"
+    },
+    "bdown": {
+        "title": "Break Down",
+        "track": "32"
+    },
+    "hell": {
+        "title": "Running Hell",
+        "track": "33"
+    },
+    "ballos": {
+        "title": "Seal Chamber",
+        "track": "34"
+    },
+    "ending": {
+        "title": "The Way Back Home",
+        "track": "35"
+    },
+    "toroko": {
+        "title": "Toroko's Theme",
+        "track": "36"
+    },
+    "white": {
+        "title": "White",
+        "track": "37"
+    },
+    "kaze": {
+        "title": "Wind Fortress",
+        "track": "38",
+        "YEAR": "2010-03-22"
+    },
+    "halloween2": {
+        "title": "Halloween 2",
+        "track": "39",
+        "YEAR": "2010-03-22"
+    },
+    "fanfale1": {
+        "title": "Got Item!",
+        "track": "40"
+    },
+    "fanfale2": {
+        "title": "Get Heart Tank!",
+        "track": "41"
+    },
+    "fanfale3": {
+        "title": "Victory!",
+        "track": "42"
+    },
+    "gameover": {
+        "title": "Game Over",
+        "track": "43"
+    },
+    "cave": {
+        "title": "Pier Walk (Unreleased Track)",
+        "track": "44"
+    },
+    "rockorg": {
+        "title": "Untitled (Rockorg) [Unreleased Track]",
+        "track": "45"
+    },
+    "mdown": {
+        "title": "Meltdown (Unreleased Track)",
+        "track": "46"
+    },
+    "leef": {
+        "title": "People of the Root (Unreleased Track)",
+        "track": "47"
+    }
+}

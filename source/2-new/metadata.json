@@ -1,0 +1,187 @@
+{
+    "__common__": {
+        "artist": "Yann van der Cruyssen",
+        "composer": "天谷 大輔",
+        "album": "Cave Story Soundtrack Collection",
+        "compilation": "1",
+        "genre": "Game",
+        "disc": "2/3",
+        "date": "2010-03-22"
+    },
+    "access": {
+        "title": "Access (New)",
+        "track": "1"
+    },
+    "vivi": {
+        "title": "Gestation (New)",
+        "track": "2"
+    },
+    "mura": {
+        "title": "Mimiga Town (New)",
+        "track": "3"
+    },
+    "plant": {
+        "title": "Plant (New)",
+        "track": "4"
+    },
+    "ginsuke": {
+        "title": "Balrog's Theme (New)",
+        "track": "5"
+    },
+    "gravity": {
+        "title": "Gravity (New)",
+        "track": "6"
+    },
+    "cemetery": {
+        "title": "Cemetery (New)",
+        "track": "7"
+    },
+    "anzen": {
+        "title": "Safety (New)",
+        "track": "8"
+    },
+    "wanpaku": {
+        "title": "Mischievous Robot (New)",
+        "track": "9"
+    },
+    "kodou": {
+        "title": "Pulse (New)",
+        "track": "10"
+    },
+    "weed": {
+        "title": "On to Grasstown (New)",
+        "track": "11"
+    },
+    "fireeye": {
+        "title": "Eyes of Flame (New)",
+        "track": "12"
+    },
+    "mdown2": {
+        "title": "Meltdown 2 (New)",
+        "track": "13"
+    },
+    "dr": {
+        "title": "Tyrant (New)",
+        "track": "14"
+    },
+    "escape": {
+        "title": "Run! (New)",
+        "track": "15"
+    },
+    "jenka": {
+        "title": "Jenka 1 (New)",
+        "track": "16"
+    },
+    "jenka2": {
+        "title": "Jenka 2 (New)",
+        "track": "17"
+    },
+    "maze": {
+        "title": "Labyrinth Fight (New)",
+        "track": "18"
+    },
+    "grand": {
+        "title": "Geothermal (New)",
+        "track": "19"
+    },
+    "ironh": {
+        "title": "Oppression (New)",
+        "track": "20"
+    },
+    "marine": {
+        "title": "Living Waterway (New)",
+        "track": "21"
+    },
+    "quiet": {
+        "title": "Quiet (New)",
+        "track": "22"
+    },
+    "wanpak2": {
+        "title": "Scorching Back (New)",
+        "track": "23"
+    },
+    "oside": {
+        "title": "Moonsong (New)",
+        "track": "24"
+    },
+    "requiem": {
+        "title": "Hero's End (New)",
+        "track": "25"
+    },
+    "curly": {
+        "title": "Cave Story (Theme Song) [New]",
+        "track": "26"
+    },
+    "lastcave": {
+        "title": "Last Cave (New)",
+        "track": "27"
+    },
+    "balcony": {
+        "title": "Balcony (New)",
+        "track": "28"
+    },
+    "lastbtl": {
+        "title": "Charge (New)",
+        "track": "29"
+    },
+    "zonbie": {
+        "title": "Zombie (New)",
+        "track": "30"
+    },
+    "lastbt3": {
+        "title": "Last Battle (New)",
+        "track": "31"
+    },
+    "bdown": {
+        "title": "Break Down (New)",
+        "track": "32"
+    },
+    "hell": {
+        "title": "Running Hell (New)",
+        "track": "33"
+    },
+    "ballos": {
+        "title": "Seal Chamber (New)",
+        "track": "34"
+    },
+    "ending": {
+        "title": "The Way Back Home (New)",
+        "track": "35"
+    },
+    "toroko": {
+        "title": "Toroko's Theme (New)",
+        "track": "36"
+    },
+    "white": {
+        "title": "White (New)",
+        "track": "37"
+    },
+    "kaze": {
+        "title": "Wind Fortress (New)",
+        "track": "38"
+    },
+    "fanfale1": {
+        "title": "Got Item! (New)",
+        "track": "39"
+    },
+    "fanfale2": {
+        "title": "Get Heart Tank! (New)",
+        "track": "40"
+    },
+    "fanfale3": {
+        "title": "Victory! (New)",
+        "track": "41"
+    },
+    "gameover": {
+        "title": "Game Over (New)",
+        "track": "42"
+    },
+    "ika": {
+        "title": "Swim, Ikachan! (Pixel's Birthday Song)",
+        "track": "43"
+    },
+    "creditwii": {
+        "title": "WiiWare Credits (Unreleased Track)",
+        "track": "44"
+    }
+}
