@@ -6,7 +6,8 @@
         "compilation": "1",
         "genre": "Game",
         "disc": "1/3",
-        "date": "2004-12-20"
+        "date": "2004-12-20",
+        "year": "2004"
     },
     "access": {
         "title": "Access",
@@ -159,12 +160,16 @@
     "kaze": {
         "title": "Wind Fortress",
         "track": "38",
-        "YEAR": "2010-03-22"
+        "artist": "天谷 大輔 and Danny Baranowsky",
+        "date": "2011-11-08",
+        "year": "2011"
     },
     "halloween2": {
         "title": "Halloween 2",
         "track": "39",
-        "YEAR": "2010-03-22"
+        "artist": "天谷 大輔 and Danny Baranowsky",
+        "date": "2011-11-08",
+        "year": "2011"
     },
     "fanfale1": {
         "title": "Got Item!",
