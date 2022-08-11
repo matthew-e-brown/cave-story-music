@@ -1,10 +1,12 @@
+// @ts-check
+
 const fs = require('fs/promises');
 const path = require('path');
-const { constants: fsConstants } = require('fs');
 
-const { convert: convert1 } = require('./source/1-original/convert');
-const { convert: convert2 } = require('./source/2-new/convert');
-const { convert: convert3 } = require('./source/3-remastered/convert');
+const { fileExists } = require('./tools/utils');
+
+const { convertOrg } = require('./source/convert-org');
+const { convertOgg } = require('./source/convert-ogg');
 
 
 /**
@@ -24,12 +26,6 @@ function getNumber(stringValue, defaultValue) {
  */
 const nth = n => [ 'st', 'nd', 'rd' ][((n + 90) % 100 - 10) % 10 - 1] || 'th';
 
-/**
- * @param {fs.PathLike} path
- * @see https://stackoverflow.com/a/35008327/10549827
- */
-const exists = path => fs.access(path, fsConstants.F_OK).then(() => true).catch(() => false);
-
 
 /**
  * Let's do this thang!!
@@ -39,7 +35,7 @@ async function main() {
     const outDir = path.join(__dirname, './flac-output');
 
     // Clear the output directory just in case we are redoing a fuck-up
-    if (await exists(outDir) && !process.argv.some(arg => arg == '-f' || arg == '--force')) {
+    if (await fileExists(outDir) && !process.argv.some(arg => arg == '-f' || arg == '--force')) {
         console.error(`Refusing to overwrite output directory without '-f'/'--force' flag.`);
         return;
     }
@@ -58,22 +54,50 @@ async function main() {
     // -------------------------------------------------------------------------------------------
 
     // Grab the length and fade counts from the script arguments
-    const totalPlays    = Math.round(getNumber(process.argv[2], 2));
+    const loopCount     = Math.round(getNumber(process.argv[2], 1));
     const fadeDelay     =            getNumber(process.argv[3], 2);
     const fadeDuration  =            getNumber(process.argv[4], 8);
 
     console.log(
-        `\nEach song will play ${totalPlays} times (1 play-through, plus ${totalPlays - 1} "loop(s)"), start a fade\n` +
-        `${fadeDelay} second(s) into the ${totalPlays + 1}${nth(totalPlays + 1)} play-through, fading to complete silence ${fadeDuration} second(s) later.`
+        `\nEach song will play ${loopCount + 1} times (1 play-through, plus ${loopCount} "loop(s)"), start a fade\n` +
+        `${fadeDelay} second(s) into the ${loopCount + 2}${nth(loopCount + 2)} play-through, fading to complete silence ${fadeDuration} second(s) later.`
     );
 
     console.log(`\nEverything will run concurrently. You may see a lot of CPU usage for a bit.`);
     console.log(`Running...`);
 
     await Promise.all([
-        convert1(totalPlays, fadeDelay, fadeDuration, '\x1b[36m1 - Original   |\x1b[0m'),
-        // convert2(totalPlays, fadeDelay, fadeDuration, '\x1b[32m2 - New        |\x1b[0m'),
-        // convert3(totalPlays, fadeDelay, fadeDuration, '\x1b[33m3 - Remastered |\x1b[0m'),
+        convertOrg(
+            path.join(__dirname, './source/1-original/org-source'),
+            path.join(__dirname, './flac-output/1-original'),
+            require('./source/1-original/metadata.json'),
+            loopCount,
+            fadeDelay,
+            fadeDuration,
+            '\x1b[36m1 - Original   |\x1b[0m'
+        ),
+        convertOgg(
+            // Use SoloMael's fixed files for the main audio...
+            path.join(__dirname, './source/2-new/ogg-source-fixed'),
+            path.join(__dirname, './flac-output/2-new'),
+            require('./source/2-new/metadata.json'),
+            // ... but probe their lengths using the files from the game.
+            path.join(__dirname, './source/2-new/ogg-source-game'),
+            loopCount,
+            fadeDelay,
+            fadeDuration,
+            '\x1b[32m2 - New        |\x1b[0m'
+        ),
+        convertOgg(
+            path.join(__dirname, './source/3-remastered/ogg-source'),
+            path.join(__dirname, './flac-output/3-remastered'),
+            require('./source/3-remastered/metadata.json'),
+            null, // all lengths for part 3 *should* be correct
+            loopCount,
+            fadeDelay,
+            fadeDuration,
+            '\x1b[33m3 - Remastered |\x1b[0m'
+        ),
     ]);
 
 }

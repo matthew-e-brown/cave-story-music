@@ -1,22 +1,31 @@
+// @ts-check
+
 const fs = require('fs/promises');
 const cp = require('child_process');
 const path = require('path');
 
-const metadata = require('./metadata.json');
-const { makeMetadata } = require('../../tools/utils');
+const { makeMetadata, join } = require('../tools/utils');
 
 
 /**
- * @param {number} totalPlays How many times the song should loop before fading. Two loops means
- * that the main body of the song will play twice *total*.
+ * @param {string} srcDir
+ * @param {string} outDir
+ * @param {Object.<string, any>} metadata
+ * @param {number} loopCount How many times the song should loop before fading. One loop means that
+ * the main body of the song will play twice *total*.
  * @param {number} fadeDelay How long into the loops+1'th play-through the fade should start.
  * @param {number} fadeDuration How long the fade should take.
  * @param {string} logPrefix String to be put in front of every call to `console.log`.
  */
-async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefix = '') {
-
-    const srcDir = path.join(__dirname, './org-source');
-    const outDir = path.join(__dirname, '../../flac-output/1-original');
+async function convertOrg(
+    srcDir,
+    outDir,
+    metadata,
+    loopCount = 1,
+    fadeDelay = 2,
+    fadeDuration = 8,
+    logPrefix = ''
+) {
 
     // If the output directory doesn't exist, make it
     await fs.mkdir(outDir, { recursive: true });
@@ -30,8 +39,8 @@ async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
     const total = orgFiles.length;
 
     // Each one is going to have to listen to the main program to see if it should get terminated
-    if (global.process.getMaxListeners() < orgFiles.length)
-        global.process.setMaxListeners(orgFiles.length);
+    if (global.process.getMaxListeners() < total)
+        global.process.setMaxListeners(total);
 
     // Process all files concurrently
     await Promise.all(orgFiles.map(async fileName => {
@@ -63,13 +72,10 @@ async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
 
         let fadeStart =
             (44100.0 / 1000.0 * wait)                   // frames per tick
-            * (start + (end - start) * totalPlays)      // total number of ticks
+            * (start + (end - start) * (loopCount + 1)) // total number of ticks
             / 44100.0                                   // ticks per second
             + fadeDelay;                                // `n` seconds after that
         let fadeEnd = fadeStart + fadeDuration;
-
-        fadeStart = fadeStart.toFixed(6).replace(/0+$/, '');
-        fadeEnd = fadeEnd.toFixed(6).replace(/0+$/, '');
 
         // --------------------------
         // Spawn child processes
@@ -82,10 +88,10 @@ async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
             'run',
             '-qr',
             '--locked',
-            '--manifest-path', path.join(__dirname, '../../tools/organism/Cargo.toml'),
+            '--manifest-path', path.join(__dirname, '../tools/organism/Cargo.toml'),
             '--',
-            fullName,               // .org file to convert to raw data
-            totalPlays.toString(),  // *Loops* parameter, not *plays* parameter, so no +1
+            fullName,                       // .org file to convert to raw data
+            (loopCount + 2).toString(),    // number of times we want to loop; we need buffer so +2
         ], {
             stdio: [ 'ignore', 'pipe', 'ignore' ],
             windowsHide: true,
@@ -99,11 +105,11 @@ async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
             '-channel_layout', 'stereo',                            // in stereo
             '-i', 'pipe:',                                          // take PCM data from pipe
             '-s', '0',                                              // start at zero
-            '-t', fadeEnd.toString(),                               // finish where the fade stops
+            '-t', (fadeEnd + 0.5).toString(),                       // finish just after the fade stops
             '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`, // add the fade
             ...makeMetadata(
                 metadata['__common__'],
-                metadata[baseName.replace(/\.o[rg]g$/, '').toLowerCase()]
+                metadata[baseName.replace(/\.org$/, '').toLowerCase()]
             ),
             destPath,                                               // output to .flac file
         ], {
@@ -131,22 +137,18 @@ async function convert(totalPlays = 2, fadeDelay = 2, fadeDuration = 8, logPrefi
             ffmpeg.kill('SIGINT');
         });
 
-        // "Join"
-        await Promise.allSettled([
-            new Promise((resolve, reject) => {
-                organism.on('exit', resolve);
-                organism.on('error', reject);
-            }),
-            new Promise((resolve, reject) => {
-                ffmpeg.on('exit', resolve);
-                ffmpeg.on('error', reject);
-            }),
-        ]);
+        const [ oRes, fRes ] = await join(organism, ffmpeg);
 
-        console.log(`${logPrefix} Child processes for ${baseName} completed (${++finished}/${total}).`);
+        if (fRes.status == 'fulfilled' && oRes.status == 'fulfilled')
+            console.log(`${logPrefix} Child processes for ${baseName} completed (${++finished}/${total}).`);
+        else {
+            if (oRes.status == 'rejected')
+                console.error(`${logPrefix} Organism failed to execute for ${baseName}: ${oRes.reason}`);
+            if (fRes.status == 'rejected')
+                console.error(`${logPrefix} FFmpeg failed to execute for ${baseName}: ${fRes.reason}.`);
+        }
     }));
 }
 
 
-if (require.main === module) convert();
-else module.exports = { convert };
+module.exports = { convertOrg };
