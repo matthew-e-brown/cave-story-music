@@ -3,6 +3,7 @@
         "artist": "天谷 大輔",
         "composer": "天谷 大輔",
         "album": "Cave Story Soundtrack Collection",
+        "album_artist": "Studio Pixel & Nicalis",
         "compilation": "1",
         "genre": "Game",
         "disc": "1/3",
@@ -160,14 +161,14 @@
     "kaze": {
         "title": "Wind Fortress",
         "track": "38",
-        "artist": "天谷 大輔 and Danny Baranowsky",
+        "artist": "天谷 大輔 & Danny Baranowsky",
         "date": "2011-11-08",
         "year": "2011"
     },
     "halloween2": {
         "title": "Halloween 2",
         "track": "39",
-        "artist": "天谷 大輔 and Danny Baranowsky",
+        "artist": "天谷 大輔 & Danny Baranowsky",
         "date": "2011-11-08",
         "year": "2011"
     },
