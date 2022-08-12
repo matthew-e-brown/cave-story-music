@@ -49,6 +49,7 @@ async function probeLength(fileName) {
  * @param {string?} probeDir A directory to override the probing of `.ogg` files from. Probing is
  * used to determine duration of source files for looping; if audio is broken, files with fixed
  * lengths can be put in here.
+ * @param {string?} coverArt A path to the image to use for cover art.
  * @param {number} loopCount How many times the song should loop before fading. One loop means that
  * the main body of the song will play twice *total*.
  * @param {number} fadeDelay How long into the loops+1'th play-through the fade should start.
@@ -60,6 +61,7 @@ async function probeLength(fileName) {
     outDir,
     metadata,
     probeDir = null,
+    coverArt = null,
     loopCount = 1,
     fadeDelay = 2,
     fadeDuration = 8,
@@ -137,6 +139,15 @@ async function probeLength(fileName) {
         const ffmpeg = cp.spawn('ffmpeg', [
             '-stream_loop', '-1',                                       // loop the input stream infinitely
             '-i', fullName,                                             // take the file directly
+            ...(coverArt ? [                                            // add cover art if applicable
+                '-i', coverArt,                                         // take image as input
+                '-map', '0:a',                                          // map the first one (media) to audio stream
+                '-map', '1:v',                                          // map the second one (image) to video stream
+                '-codec:v', 'copy',                                     // copy the video stream instead of re-encoding
+                '-metadata:s:v', 'title="Album cover"',                 // add metadata just in case
+                '-metadata:s:v', 'comment="Cover (front)"',             // ""
+                '-disposition:v', 'attached_pic',                       // mark as attached
+            ] : [ ]),                                                   // -------------------------
             '-s', '0',                                                  // start at zero
             '-t', (fadeEnd + 0.5).toString(),                           // finish the stream just after fade
             '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`,     // add the fade
@@ -155,7 +166,8 @@ async function probeLength(fileName) {
         if (res.status == 'fulfilled') {
             console.log(`${logPrefix} Child process for ${baseName} completed (${++finished}/${total}).`);
         } else {
-            console.error(`${logPrefix} FFmpeg failed to execute for ${baseName}: ${res.reason}.`);
+            console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${baseName}:\x1b[0m ${res.reason}.`);
+            console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
         }
     }));
 
@@ -188,6 +200,14 @@ async function probeLength(fileName) {
             '-i', introTrack,
             '-stream_loop', '-1',
             '-i', loopTrack,
+            ...(coverArt ? [
+                '-i', coverArt,
+                '-map', '2',
+                '-c:v', 'copy',
+                '-metadata:s:v', 'title="Album cover"',
+                '-metadata:s:v', 'comment="Cover (front)"',
+                '-disposition:v:2', 'attached_pic',
+            ] : [ ]),
             '-s', '0',
             '-t', (fadeEnd + 0.5).toString(),
             ...makeMetadata(
@@ -207,7 +227,8 @@ async function probeLength(fileName) {
         if (res.status == 'fulfilled') {
             console.log(`${logPrefix} Child process for ${names} completed (${++finished}/${total}).`);
         } else {
-            console.error(`${logPrefix} FFmpeg failed to execute for ${names}: ${res.reason}.`);
+            console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${names}:\x1b[0m ${res.reason}.`);
+            console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
         }
     }));
 

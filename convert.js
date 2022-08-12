@@ -32,16 +32,26 @@ const nth = n => [ 'st', 'nd', 'rd' ][((n + 90) % 100 - 10) % 10 - 1] || 'th';
  */
 async function main() {
 
-    const outDir = path.join(__dirname, './flac-output');
+    // Pull '-f' out of argv, then remove it from argv to keep other relative positions the same
+    const force = process.argv.some(arg => arg == '-f' || arg == '--force');
+    process.argv = process.argv.filter(arg => arg != '-f' && arg != '--force');
+
+    // -------------------------------------------------------------------------------------------
+
+    // Grab the length and fade counts from the script arguments
+    const outDir        = process.argv[2] || path.join(__dirname, './flac-output');
+    const coverArt      = process.argv[3] || path.join(__dirname, './artwork/cover.jpg');
+    const loopCount     = Math.round(getNumber(process.argv[4], 1));
+    const fadeDelay     =            getNumber(process.argv[5], 2);
+    const fadeDuration  =            getNumber(process.argv[6], 8);
+
+    // -------------------------------------------------------------------------------------------
 
     // Clear the output directory just in case we are redoing a fuck-up
-    if (await fileExists(outDir) && !process.argv.some(arg => arg == '-f' || arg == '--force')) {
+    if (await fileExists(outDir) && !force) {
         console.error(`Refusing to overwrite output directory without '-f'/'--force' flag.`);
         return;
     }
-
-    // Keep positional arguments the same
-    process.argv = process.argv.filter(arg => arg != '-f' && arg != '--force');
 
     try {
         await fs.rm(outDir, { recursive: true, force: true });
@@ -52,11 +62,6 @@ async function main() {
     }
 
     // -------------------------------------------------------------------------------------------
-
-    // Grab the length and fade counts from the script arguments
-    const loopCount     = Math.round(getNumber(process.argv[2], 1));
-    const fadeDelay     =            getNumber(process.argv[3], 2);
-    const fadeDuration  =            getNumber(process.argv[4], 8);
 
     console.log(
         `\nEach song will play ${loopCount + 1} times (1 play-through, plus ${loopCount} "loop(s)"), start a fade\n` +
@@ -69,8 +74,9 @@ async function main() {
     await Promise.all([
         convertOrg(
             path.join(__dirname, './source/1-original/org-source'),
-            path.join(__dirname, './flac-output/1-original'),
+            path.join(outDir, './1-original'),
             require('./source/1-original/metadata.json'),
+            coverArt,
             loopCount,
             fadeDelay,
             fadeDuration,
@@ -79,10 +85,11 @@ async function main() {
         convertOgg(
             // Use SoloMael's fixed files for the main audio...
             path.join(__dirname, './source/2-new/ogg-source-fixed'),
-            path.join(__dirname, './flac-output/2-new'),
+            path.join(outDir, './2-new'),
             require('./source/2-new/metadata.json'),
             // ... but probe their lengths using the files from the game.
             path.join(__dirname, './source/2-new/ogg-source-game'),
+            coverArt,
             loopCount,
             fadeDelay,
             fadeDuration,
@@ -90,9 +97,10 @@ async function main() {
         ),
         convertOgg(
             path.join(__dirname, './source/3-remastered/ogg-source'),
-            path.join(__dirname, './flac-output/3-remastered'),
+            path.join(outDir, './3-remastered'),
             require('./source/3-remastered/metadata.json'),
             null, // all lengths for part 3 *should* be correct
+            coverArt,
             loopCount,
             fadeDelay,
             fadeDuration,

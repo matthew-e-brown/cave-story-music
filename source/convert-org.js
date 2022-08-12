@@ -11,6 +11,7 @@ const { makeMetadata, join } = require('../tools/utils');
  * @param {string} srcDir
  * @param {string} outDir
  * @param {Object.<string, any>} metadata
+ * @param {string?} coverArt A path to the image to use for cover art.
  * @param {number} loopCount How many times the song should loop before fading. One loop means that
  * the main body of the song will play twice *total*.
  * @param {number} fadeDelay How long into the loops+1'th play-through the fade should start.
@@ -21,6 +22,7 @@ async function convertOrg(
     srcDir,
     outDir,
     metadata,
+    coverArt = null,
     loopCount = 1,
     fadeDelay = 2,
     fadeDuration = 8,
@@ -104,6 +106,15 @@ async function convertOrg(
             '-ac', '2',                                             // 2 audio channels
             '-channel_layout', 'stereo',                            // in stereo
             '-i', 'pipe:',                                          // take PCM data from pipe
+            ...(coverArt ? [                                        // add cover art if applicable
+                '-i', coverArt,                                     // take image as input
+                '-map', '0:a',                                      // map the first one (media) to audio stream
+                '-map', '1:v',                                      // map the second one (image) to video stream
+                '-codec:v', 'copy',                                 // copy the video stream instead of re-encoding
+                '-metadata:s:v', 'title="Album cover"',             // add metadata just in case
+                '-metadata:s:v', 'comment="Cover (front)"',         // ""
+                '-disposition:v', 'attached_pic',                   // mark as attached
+            ] : [ ]),                                               // ----------------------------
             '-s', '0',                                              // start at zero
             '-t', (fadeEnd + 0.5).toString(),                       // finish just after the fade stops
             '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`, // add the fade
@@ -142,10 +153,14 @@ async function convertOrg(
         if (fRes.status == 'fulfilled' && oRes.status == 'fulfilled')
             console.log(`${logPrefix} Child processes for ${baseName} completed (${++finished}/${total}).`);
         else {
-            if (oRes.status == 'rejected')
-                console.error(`${logPrefix} Organism failed to execute for ${baseName}: ${oRes.reason}`);
-            if (fRes.status == 'rejected')
-                console.error(`${logPrefix} FFmpeg failed to execute for ${baseName}: ${fRes.reason}.`);
+            if (oRes.status == 'rejected') {
+                console.error(`${logPrefix}\x1b[31m Organism failed to execute for ${baseName}:\x1b[0m ${oRes.reason}`);
+                console.error(`${logPrefix}\x1b[31m Change stdout/stderr to 'inherit' and run again to see output.\x1b[0m`);
+            }
+            if (fRes.status == 'rejected') {
+                console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${baseName}:\x1b[0m ${fRes.reason}.`);
+                console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
+            }
         }
     }));
 }
