@@ -111,8 +111,8 @@ async function convertOrg(
                 '-map', '0:a',                                      // map the first one (media) to audio stream
                 '-map', '1:v',                                      // map the second one (image) to video stream
                 '-codec:v', 'copy',                                 // copy the video stream instead of re-encoding
-                '-metadata:s:v', 'title="Album cover"',             // add metadata just in case
-                '-metadata:s:v', 'comment="Cover (front)"',         // ""
+                '-metadata:s:v', 'title=Album cover',               // add metadata just in case
+                '-metadata:s:v', 'comment=Cover (front)',           // ""
                 '-disposition:v', 'attached_pic',                   // mark as attached
             ] : [ ]),                                               // ----------------------------
             '-s', '0',                                              // start at zero
