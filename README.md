@@ -9,20 +9,28 @@ Also cuz I was bored.
 
 ## Prerequisites
 
-- Node installed
-- `ffmpeg` and `ffprobe` installed and on PATH - used for actual conversion and
-  re-encoding
-- Rust & Cargo installed and on PATH - used for converting raw `.org` sound data
-  into PCM format with [Organism][organism]
+- Node installed;
+- `ffmpeg` and `ffprobe` installed and on PATH (used for actual conversion and
+  re-encoding); and
+- Rust & Cargo installed and on PATH (used for converting raw `.org` sound data
+  into PCM format with [Organism][organism]).
 
 
 ## Usage
 
-1.  Find all of the source audio files, and put them into their respective
-    directories. There are instructions below as to how to find all of the
-    files.
-2.  Run `node convert.js`.
-3.  Retrieve the `.flac` files from `./flac-output` and convert them to whatever
+1.  Clone this repository with submodules.
+    ```
+    git clone --recurse-submodules git@github.com:matthew-e-brown/cave-story-music.git
+    ```
+3.  Find all of the source audio files, and put them into their respective
+    directories. There are
+    [instructions below](#where-to-get-the-audio-files-from) as to how to find
+    all of the files.
+4.  Run the script.
+    ```
+    node convert.js
+    ```
+6.  Retrieve the `.flac` files from `./flac-output` and convert them to whatever
     format you want. <sup>[[1]][to-mp3] [[2]][to-aiff]</sup>
 
 The script and metadata should all have sensible defaults, but you can of course
