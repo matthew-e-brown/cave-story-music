@@ -12,178 +12,184 @@
     },
     "access": {
         "title": "Access (New)",
-        "track": "1"
+        "track": "1/44"
     },
     "vivi": {
         "title": "Gestation (New)",
-        "track": "2"
+        "track": "2/44"
     },
     "mura": {
         "title": "Mimiga Town (New)",
-        "track": "3"
+        "track": "3/44"
     },
     "plant": {
         "title": "Plant (New)",
-        "track": "4"
+        "track": "4/44"
     },
     "ginsuke": {
         "title": "Balrog's Theme (New)",
-        "track": "5"
+        "track": "5/44"
     },
     "gravity": {
         "title": "Gravity (New)",
-        "track": "6"
+        "track": "6/44"
     },
     "cemetery": {
         "title": "Cemetery (New)",
-        "track": "7"
+        "track": "7/44"
     },
     "anzen": {
         "title": "Safety (New)",
-        "track": "8"
+        "track": "8/44"
     },
     "wanpaku": {
         "title": "Mischievous Robot (New)",
-        "track": "9"
+        "track": "9/44"
     },
     "kodou": {
         "title": "Pulse (New)",
-        "track": "10"
+        "track": "10/44"
     },
     "weed": {
         "title": "On to Grasstown (New)",
-        "track": "11"
+        "track": "11/44"
     },
     "fireeye": {
         "title": "Eyes of Flame (New)",
-        "track": "12"
+        "track": "12/44"
     },
     "mdown2": {
         "title": "Meltdown 2 (New)",
-        "track": "13"
+        "track": "13/44"
     },
     "dr": {
         "title": "Tyrant (New)",
-        "track": "14"
+        "track": "14/44"
     },
     "escape": {
         "title": "Run! (New)",
-        "track": "15"
+        "track": "15/44"
     },
     "jenka": {
         "title": "Jenka 1 (New)",
-        "track": "16"
+        "track": "16/44"
     },
     "jenka2": {
         "title": "Jenka 2 (New)",
-        "track": "17"
+        "track": "17/44"
     },
     "maze": {
         "title": "Labyrinth Fight (New)",
-        "track": "18"
+        "track": "18/44"
     },
     "grand": {
         "title": "Geothermal (New)",
-        "track": "19"
+        "track": "19/44"
     },
     "ironh": {
         "title": "Oppression (New)",
-        "track": "20"
+        "track": "20/44"
     },
     "marine": {
         "title": "Living Waterway (New)",
-        "track": "21"
+        "track": "21/44"
     },
     "quiet": {
         "title": "Quiet (New)",
-        "track": "22"
+        "track": "22/44"
     },
     "wanpak2": {
         "title": "Scorching Back (New)",
-        "track": "23"
+        "track": "23/44"
     },
     "oside": {
         "title": "Moonsong (New)",
-        "track": "24"
+        "track": "24/44"
     },
     "requiem": {
         "title": "Hero's End (New)",
-        "track": "25"
+        "track": "25/44"
     },
     "curly": {
         "title": "Cave Story (Theme Song) [New]",
-        "track": "26"
+        "track": "26/44"
     },
     "lastcave": {
         "title": "Last Cave (New)",
-        "track": "27"
+        "track": "27/44"
     },
     "balcony": {
         "title": "Balcony (New)",
-        "track": "28"
+        "track": "28/44"
     },
     "lastbtl": {
         "title": "Charge (New)",
-        "track": "29"
+        "track": "29/44",
+        "__comment__": "This track is only 6 seconds long",
+        "__force_loops__": 4
     },
     "zonbie": {
         "title": "Zombie (New)",
-        "track": "30"
+        "track": "30/44"
     },
     "lastbt3": {
         "title": "Last Battle (New)",
-        "track": "31"
+        "track": "31/44"
     },
     "bdown": {
         "title": "Break Down (New)",
-        "track": "32"
+        "track": "32/44"
     },
     "hell": {
         "title": "Running Hell (New)",
-        "track": "33"
+        "track": "33/44"
     },
     "ballos": {
         "title": "Seal Chamber (New)",
-        "track": "34"
+        "track": "34/44"
     },
     "ending": {
         "title": "The Way Back Home (New)",
-        "track": "35"
+        "track": "35/44"
     },
     "toroko": {
         "title": "Toroko's Theme (New)",
-        "track": "36"
+        "track": "36/44"
     },
     "white": {
         "title": "White (New)",
-        "track": "37"
+        "track": "37/44"
     },
     "kaze": {
         "title": "Wind Fortress (New)",
-        "track": "38"
+        "track": "38/44"
     },
     "fanfale1": {
         "title": "Got Item! (New)",
-        "track": "39"
+        "track": "39/44",
+        "__force_loops__": 0
     },
     "fanfale2": {
         "title": "Get Heart Tank! (New)",
-        "track": "40"
+        "track": "40/44",
+        "__force_loops__": 0
     },
     "fanfale3": {
         "title": "Victory! (New)",
-        "track": "41"
+        "track": "41/44",
+        "__force_loops__": 0
     },
     "gameover": {
         "title": "Game Over (New)",
-        "track": "42"
+        "track": "42/44",
+        "__force_loops__": 0
     },
     "ika": {
         "title": "Swim, Ikachan! (Pixel's Birthday Song)",
-        "track": "43"
+        "track": "43/44"
     },
     "creditwii": {
         "title": "Credits (WiiWare) [Unreleased Track]",
-        "track": "44"
+        "track": "44/44"
     }
 }

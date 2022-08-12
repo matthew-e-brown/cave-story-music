@@ -12,196 +12,202 @@
     },
     "access": {
         "title": "Access",
-        "track": "1"
+        "track": "1/47"
     },
     "vivi": {
         "title": "Gestation",
-        "track": "2"
+        "track": "2/47"
     },
     "mura": {
         "title": "Mimiga Town",
-        "track": "3"
+        "track": "3/47"
     },
     "plant": {
         "title": "Plant",
-        "track": "4"
+        "track": "4/47"
     },
     "ginsuke": {
         "title": "Balrog's Theme",
-        "track": "5"
+        "track": "5/47"
     },
     "gravity": {
         "title": "Gravity",
-        "track": "6"
+        "track": "6/47"
     },
     "cemetery": {
         "title": "Cemetery",
-        "track": "7"
+        "track": "7/47"
     },
     "anzen": {
         "title": "Safety",
-        "track": "8"
+        "track": "8/47"
     },
     "wanpaku": {
         "title": "Mischievous Robot",
-        "track": "9"
+        "track": "9/47"
     },
     "kodou": {
         "title": "Pulse",
-        "track": "10"
+        "track": "10/47"
     },
     "weed": {
         "title": "On to Grasstown",
-        "track": "11"
+        "track": "11/47"
     },
     "fireeye": {
         "title": "Eyes of Flame",
-        "track": "12"
+        "track": "12/47"
     },
     "mdown2": {
         "title": "Meltdown 2",
-        "track": "13"
+        "track": "13/47"
     },
     "dr": {
         "title": "Tyrant",
-        "track": "14"
+        "track": "14/47"
     },
     "escape": {
         "title": "Run!",
-        "track": "15"
+        "track": "15/47"
     },
     "jenka": {
         "title": "Jenka 1",
-        "track": "16"
+        "track": "16/47"
     },
     "jenka2": {
         "title": "Jenka 2",
-        "track": "17"
+        "track": "17/47"
     },
     "maze": {
         "title": "Labyrinth Fight",
-        "track": "18"
+        "track": "18/47"
     },
     "grand": {
         "title": "Geothermal",
-        "track": "19"
+        "track": "19/47"
     },
     "ironh": {
         "title": "Oppression",
-        "track": "20"
+        "track": "20/47"
     },
     "marine": {
         "title": "Living Waterway",
-        "track": "21"
+        "track": "21/47"
     },
     "quiet": {
         "title": "Quiet",
-        "track": "22"
+        "track": "22/47"
     },
     "wanpak2": {
         "title": "Scorching Back",
-        "track": "23"
+        "track": "23/47"
     },
     "oside": {
         "title": "Moonsong",
-        "track": "24"
+        "track": "24/47"
     },
     "requiem": {
         "title": "Hero's End",
-        "track": "25"
+        "track": "25/47"
     },
     "curly": {
         "title": "Cave Story (Theme Song)",
-        "track": "26"
+        "track": "26/47"
     },
     "lastcave": {
         "title": "Last Cave",
-        "track": "27"
+        "track": "27/47"
     },
     "balcony": {
         "title": "Balcony",
-        "track": "28"
+        "track": "28/47"
     },
     "lastbtl": {
         "title": "Charge",
-        "track": "29"
+        "track": "29/47",
+        "__comment__": "This track is only 6 seconds long",
+        "__force_loops__": 4
     },
     "zonbie": {
         "title": "Zombie",
-        "track": "30"
+        "track": "30/47"
     },
     "lastbt3": {
         "title": "Last Battle",
-        "track": "31"
+        "track": "31/47"
     },
     "bdown": {
         "title": "Break Down",
-        "track": "32"
+        "track": "32/47"
     },
     "hell": {
         "title": "Running Hell",
-        "track": "33"
+        "track": "33/47"
     },
     "ballos": {
         "title": "Seal Chamber",
-        "track": "34"
+        "track": "34/47"
     },
     "ending": {
         "title": "The Way Back Home",
-        "track": "35"
+        "track": "35/47"
     },
     "toroko": {
         "title": "Toroko's Theme",
-        "track": "36"
+        "track": "36/47"
     },
     "white": {
         "title": "White",
-        "track": "37"
+        "track": "37/47"
     },
     "kaze": {
         "title": "Wind Fortress",
-        "track": "38",
+        "track": "38/47",
         "artist": "天谷 大輔 & Danny Baranowsky",
         "date": "2011-11-08",
         "year": "2011"
     },
     "halloween2": {
         "title": "Halloween 2",
-        "track": "39",
+        "track": "39/47",
         "artist": "天谷 大輔 & Danny Baranowsky",
         "date": "2011-11-08",
         "year": "2011"
     },
     "fanfale1": {
         "title": "Got Item!",
-        "track": "40"
+        "track": "40/47",
+        "__force_loops__": 0
     },
     "fanfale2": {
         "title": "Get Heart Tank!",
-        "track": "41"
+        "track": "41/47",
+        "__force_loops__": 0
     },
     "fanfale3": {
         "title": "Victory!",
-        "track": "42"
+        "track": "42/47",
+        "__force_loops__": 0
     },
     "gameover": {
         "title": "Game Over",
-        "track": "43"
+        "track": "43/47",
+        "__force_loops__": 0
     },
     "cave": {
         "title": "Pier Walk (Unreleased Track)",
-        "track": "44"
+        "track": "44/47"
     },
     "rockorg": {
         "title": "Untitled (Rockorg) [Unreleased Track]",
-        "track": "45"
+        "track": "45/47"
     },
     "mdown": {
         "title": "Meltdown (Unreleased Track)",
-        "track": "46"
+        "track": "46/47"
     },
     "leef": {
         "title": "People of the Root (Unreleased Track)",
-        "track": "47"
+        "track": "47/47"
     }
 }

@@ -4,7 +4,7 @@ const fs = require('fs/promises');
 const cp = require('child_process');
 const path = require('path');
 
-const { makeMetadata, join, fileExists } = require('../tools/utils');
+const { makeMetadata, join, fileExists, getLoopCount } = require('../tools/utils');
 
 
 /**
@@ -127,9 +127,14 @@ async function probeLength(fileName) {
         const baseName = path.basename(fileName);
         const destPath = path.join(outDir, baseName.replace(/\.ogg$/, '.flac'));
 
+        const songMeta = metadata[baseName.replace(/\.ogg$/, '').toLowerCase()];
+        const songLoops = getLoopCount(loopCount, songMeta);
+
+        const noFade = songLoops == 0 || fadeDuration == 0;
+
         const trackLength = await probeLength(await getProbeDir(fullName));
 
-        const mainLength = trackLength + trackLength * loopCount;
+        const mainLength = trackLength + trackLength * songLoops;
         const fadeStart = mainLength + fadeDelay;
         const fadeEnd = fadeStart + fadeDuration;
 
@@ -137,6 +142,7 @@ async function probeLength(fileName) {
 
         // Run FFmpeg
         const ffmpeg = cp.spawn('ffmpeg', [
+            '-loglevel', 'error',
             '-stream_loop', '-1',                                       // loop the input stream infinitely
             '-i', fullName,                                             // take the file directly
             ...(coverArt ? [                                            // add cover art if applicable
@@ -149,25 +155,30 @@ async function probeLength(fileName) {
                 '-disposition:v', 'attached_pic',                       // mark as attached
             ] : [ ]),                                                   // -------------------------
             '-s', '0',                                                  // start at zero
-            '-t', (fadeEnd + 0.5).toString(),                           // finish the stream just after fade
-            '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`,     // add the fade
+            ...(noFade ? [ ] : [                                        // add the fade
+                '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`,
+            ]),
             ...makeMetadata(
                 metadata['__common__'],
-                metadata[baseName.replace(/\.ogg$/, '').toLowerCase()],
+                songMeta,
             ),
-            destPath,                                                   // output to .flac file
+            '-codec:a', 'flac',                                         // use 'flac' codec
+            '-t', ((noFade ? mainLength : fadeEnd) + 0.5).toString(),   // finish the stream just after fade
+            destPath,                                                   // output to file
         ], {
-            stdio: 'ignore',
+            stdio: [ 'ignore', 'ignore', 'inherit' ],
             windowsHide: true,
         });
+
+        // If this process dies, send SIGINT to child
+        global.process.on('exit', () => ffmpeg.kill('SIGINT'));
 
         const [ res ] = await join(ffmpeg);
 
         if (res.status == 'fulfilled') {
             console.log(`${logPrefix} Child process for ${baseName} completed (${++finished}/${total}).`);
         } else {
-            console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${baseName}:\x1b[0m ${res.reason}.`);
-            console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
+            console.error(`${logPrefix} \x1b[31mFFmpeg failed to execute for ${baseName}:\x1b[0m ${res.reason}.`);
         }
     }));
 
@@ -183,6 +194,11 @@ async function probeLength(fileName) {
 
         const names = path.basename(introTrack) + ' & ' + path.basename(loopTrack);
 
+        const songMeta = metadata[path.basename(introTrack).replace(/_intro\.ogg$/, '').toLowerCase()];
+        const songLoops = getLoopCount(loopCount, songMeta);
+
+        const noFade = songLoops == 0 || fadeDuration == 0;
+
         // Check how long the intro and the start are
         const [ introLength, loopLength ] = await Promise.all([
             probeLength(await getProbeDir(introTrack)),
@@ -190,50 +206,61 @@ async function probeLength(fileName) {
         ]);
 
         // Determine the total length of the song:
-        const mainLength = introLength + loopLength * loopCount;
+        const mainLength = introLength + loopLength * songLoops;
         const fadeStart = mainLength + fadeDelay;
         const fadeEnd = fadeStart + fadeDuration;
 
         console.log(`${logPrefix} Spawning child process for ${names}...`);
 
         const ffmpeg = cp.spawn('ffmpeg', [
+            '-loglevel', 'error',
             '-i', introTrack,
             '-stream_loop', '-1',
             '-i', loopTrack,
             ...(coverArt ? [
                 '-i', coverArt,
-                '-map', '2',
                 '-c:v', 'copy',
                 '-metadata:s:v', 'title=Album cover',
                 '-metadata:s:v', 'comment=Cover (front)',
-                '-disposition:v:2', 'attached_pic',
+                '-disposition:v', 'attached_pic',
             ] : [ ]),
             '-s', '0',
-            '-t', (fadeEnd + 0.5).toString(),
             ...makeMetadata(
                 metadata['__common__'],
-                metadata[path.basename(introTrack).replace(/_intro\.ogg$/, '').toLowerCase()],
+                songMeta,
             ),
-            '-filter_complex', `[0:0][1:0]concat=n=2:v=0:a=1[cout];[cout]afade=t=out:st=${fadeStart}:d=${fadeDuration}[fout]`,
-            '-map', '[fout]',
+            ...(noFade ? [
+                // still do the concat even if we don't have a loop file, just in case
+                '-filter_complex', `[0:0][1:0]concat=n=2:v=0:a=1[fout]`,
+            ] : [
+                '-filter_complex', `[0:0][1:0]concat=n=2:v=0:a=1[cout];[cout]afade=t=out:st=${fadeStart}:d=${fadeDuration}[fout]`,
+            ]),
+            '-map', '2:v?',
+            '-map', '[fout]:a',
+            '-codec:a', 'flac',
+            '-t', ((noFade ? mainLength : fadeEnd) + 0.5).toString(),
             destPath
         ], {
-            stdio: 'ignore',
+            stdio: [ 'ignore', 'ignore', 'inherit' ],
             windowsHide: true,
         });
+
+        // If this process dies, send SIGINT to child
+        global.process.on('exit', () => ffmpeg.kill('SIGINT'));
 
         const [ res ] = await join(ffmpeg);
 
         if (res.status == 'fulfilled') {
             console.log(`${logPrefix} Child process for ${names} completed (${++finished}/${total}).`);
         } else {
-            console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${names}:\x1b[0m ${res.reason}.`);
-            console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
+            console.error(`${logPrefix} \x1b[31mFFmpeg failed to execute for ${names}:\x1b[0m ${res.reason}.`);
         }
     }));
 
     // "Join" on both sets
     await Promise.all([ singlePromises, doublePromises ]);
+
+    console.log(`${logPrefix} Done!`);
 }
 
 

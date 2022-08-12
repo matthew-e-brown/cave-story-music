@@ -33,6 +33,14 @@ Also cuz I was bored.
 6.  Retrieve the `.flac` files from `./flac-output` and convert them to whatever
     format you want. <sup>[[1]][to-mp3] [[2]][to-aiff]</sup>
 
+**Note:** The script all the child processes concurrently, so you may see a big
+spike in CPU usage as approximately 209 (44*2 + 44 + 47) children are spawned.
+The first set of soundtracks will take the longest because Organism needs to
+convert it to raw audio before FFmpeg can process it.
+
+
+### Changing metadata
+
 The script and metadata should all have sensible defaults, but you can of course
 edit them to your liking. If you want a media player like iTunes to import the
 album properly, make sure you keep the following items the same:
@@ -47,6 +55,10 @@ To change cover art, you'll have to edit `convert.js` directly, but it should be
 fairly obvious how to do that. You can pass `null` to `convertOgg` and
 `convertOrg` and they will skip adding cover art.
 
+You can set the `__force_loops__` property on a track to override the number of
+times a song loops. It can be a number, or it can be anything of the format
+`[+-*/%] n` to add to/subtract from/multiply/divide the main loop-count of the
+other songs by `n`.
 
 ## Contributing
 

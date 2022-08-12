@@ -58,7 +58,14 @@ async function main() {
     } catch (err) {
         // If the folder didn't exist, make it.
         if (err.code == 'ENOENT' && err.path == outDir) await fs.mkdir(outDir);
-        else throw err;
+        else if (require.main === module) {
+            console.error(`Failed to remove output directory (clearing past runs).`);
+            console.error(err.message);
+            process.exitCode = 1;
+            return;
+        } else {
+            throw err;
+        }
     }
 
     // -------------------------------------------------------------------------------------------
@@ -69,7 +76,10 @@ async function main() {
     );
 
     console.log(`\nEverything will run concurrently. You may see a lot of CPU usage for a bit.`);
-    console.log(`Running...`);
+    console.log(`Running...\n\n`);
+
+    // We need a lot of listeners for SIGINT
+    global.process.setMaxListeners(0);
 
     await Promise.all([
         convertOrg(

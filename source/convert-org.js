@@ -4,7 +4,7 @@ const fs = require('fs/promises');
 const cp = require('child_process');
 const path = require('path');
 
-const { makeMetadata, join } = require('../tools/utils');
+const { makeMetadata, join, getLoopCount } = require('../tools/utils');
 
 
 /**
@@ -40,15 +40,16 @@ async function convertOrg(
     let finished = 0;
     const total = orgFiles.length;
 
-    // Each one is going to have to listen to the main program to see if it should get terminated
-    if (global.process.getMaxListeners() < total)
-        global.process.setMaxListeners(total);
-
     // Process all files concurrently
     await Promise.all(orgFiles.map(async fileName => {
         const fullName = path.join(srcDir, fileName);
         const baseName = path.basename(fileName);
         const destPath = path.join(outDir, baseName.replace(/\.org$/, '.flac'));
+
+        const songMeta = metadata[baseName.replace(/\.org$/, '').toLowerCase()];
+        const songLoops = getLoopCount(loopCount, songMeta);
+
+        const noFade = songLoops == 0 || fadeDuration == 0;
 
         // Read the first couple bytes to determine the looping size
         const buff = Buffer.alloc(18);
@@ -72,12 +73,12 @@ async function convertOrg(
         const start = buff.readInt32LE(10);
         const end   = buff.readInt32LE(14);
 
-        let fadeStart =
+        const mainLength =
             (44100.0 / 1000.0 * wait)                   // frames per tick
-            * (start + (end - start) * (loopCount + 1)) // total number of ticks
+            * (start + (end - start) * (songLoops + 1)) // total number of ticks
             / 44100.0                                   // ticks per second
-            + fadeDelay;                                // `n` seconds after that
-        let fadeEnd = fadeStart + fadeDuration;
+        const fadeStart = mainLength + fadeDelay;       // `n` seconds after that
+        const fadeEnd = fadeStart + fadeDuration;
 
         // --------------------------
         // Spawn child processes
@@ -92,8 +93,9 @@ async function convertOrg(
             '--locked',
             '--manifest-path', path.join(__dirname, '../tools/organism/Cargo.toml'),
             '--',
-            fullName,                       // .org file to convert to raw data
-            (loopCount + 2).toString(),    // number of times we want to loop; we need buffer so +2
+            fullName,                      // .org file to convert to raw data
+            (songLoops * 2).toString(),    // number of times we want to loop
+            // ↑ we need a buffer so *2 just in case; we will kill this process early anyways
         ], {
             stdio: [ 'ignore', 'pipe', 'ignore' ],
             windowsHide: true,
@@ -101,30 +103,33 @@ async function convertOrg(
 
         // ...and pipe it directly to FFmpeg
         const ffmpeg = cp.spawn('ffmpeg', [
-            '-f', 's16le',                                          // signed, little-endian raw PCM
-            '-ar', '44100',                                         // 44,100 Hz
-            '-ac', '2',                                             // 2 audio channels
-            '-channel_layout', 'stereo',                            // in stereo
-            '-i', 'pipe:',                                          // take PCM data from pipe
-            ...(coverArt ? [                                        // add cover art if applicable
-                '-i', coverArt,                                     // take image as input
-                '-map', '0:a',                                      // map the first one (media) to audio stream
-                '-map', '1:v',                                      // map the second one (image) to video stream
-                '-codec:v', 'copy',                                 // copy the video stream instead of re-encoding
-                '-metadata:s:v', 'title=Album cover',               // add metadata just in case
-                '-metadata:s:v', 'comment=Cover (front)',           // ""
-                '-disposition:v', 'attached_pic',                   // mark as attached
-            ] : [ ]),                                               // ----------------------------
-            '-s', '0',                                              // start at zero
-            '-t', (fadeEnd + 0.5).toString(),                       // finish just after the fade stops
-            '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`, // add the fade
+            '-loglevel', 'error',
+            '-f', 's16le',                                              // signed, little-endian raw PCM
+            '-ar', '44100',                                             // 44,100 Hz
+            '-ac', '2',                                                 // 2 audio channels
+            '-channel_layout', 'stereo',                                // in stereo
+            '-i', 'pipe:',                                              // take PCM data from pipe
+            ...(coverArt ? [                                            // add cover art if applicable
+                '-i', coverArt,                                         // take image as input
+                '-map', '0:a',                                          // map the first one (media) to audio stream
+                '-map', '1:v',                                          // map the second one (image) to video stream
+                '-codec:v', 'copy',                                     // copy the video stream instead of re-encoding
+                '-metadata:s:v', 'title=Album cover',                   // add metadata just in case
+                '-metadata:s:v', 'comment=Cover (front)',               // ""
+                '-disposition:v', 'attached_pic',                       // mark as attached
+            ] : [ ]),                                                   // -------------------------
+            ...(noFade ? [ ] : [                                        // add the fade
+                '-af', `afade=t=out:st=${fadeStart}:d=${fadeDuration}`
+            ]),
             ...makeMetadata(
                 metadata['__common__'],
-                metadata[baseName.replace(/\.org$/, '').toLowerCase()]
+                songMeta,
             ),
-            destPath,                                               // output to .flac file
+            '-codec:a', 'flac',                                         // use 'flac' codec
+            '-t', ((noFade ? mainLength : fadeEnd) + 0.5).toString(),   // finish just after the fade stops
+            destPath,                                                   // output to file
         ], {
-            stdio: [ 'pipe', 'ignore', 'ignore' ],
+            stdio: [ 'pipe', 'ignore', 'inherit' ],
             windowsHide: true,
         });
 
@@ -154,15 +159,15 @@ async function convertOrg(
             console.log(`${logPrefix} Child processes for ${baseName} completed (${++finished}/${total}).`);
         else {
             if (oRes.status == 'rejected') {
-                console.error(`${logPrefix}\x1b[31m Organism failed to execute for ${baseName}:\x1b[0m ${oRes.reason}`);
-                console.error(`${logPrefix}\x1b[31m Change stdout/stderr to 'inherit' and run again to see output.\x1b[0m`);
+                console.error(`${logPrefix} \x1b[31mOrganism failed to execute for ${baseName}:\x1b[0m ${oRes.reason}`);
             }
             if (fRes.status == 'rejected') {
-                console.error(`${logPrefix}\x1b[31m FFmpeg failed to execute for ${baseName}:\x1b[0m ${fRes.reason}.`);
-                console.error(`${logPrefix}\x1b[31m Change stderr to 'inherit' and run again to see output.\x1b[0m`);
+                console.error(`${logPrefix} \x1b[31mFFmpeg failed to execute for ${baseName}:\x1b[0m ${fRes.reason}.`);
             }
         }
     }));
+
+    console.log(`${logPrefix} Done!`);
 }
 
 

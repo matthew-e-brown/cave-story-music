@@ -12,7 +12,8 @@ const { constants: fsConstants } = require('fs');
 function makeMetadata(common, track) {
     const metadata = Object.assign({ }, common, track);
     return Object.entries(metadata).reduce((acc, [ key, value ]) => {
-        return [ ...acc, '-metadata', `${key}=${value}` ];
+        if (key.match(/^__.*__$/)) return acc; // skip __key__ properties
+        else return [ ...acc, '-metadata', `${key}=${value}` ];
     }, /** @type {string[]} */ ([ ]));
 }
 
@@ -40,8 +41,51 @@ function join(...processes) {
 const fileExists = (path) => fs.access(path, fsConstants.F_OK).then(() => true).catch(() => false);
 
 
+/**
+ * @param {number} loopCount The default number of loops.
+ * @param {any} songMeta The song's metadata object.
+ * @returns {number} The actual number of loops this particular song should loop for.
+ */
+const getLoopCount = (loopCount, songMeta) => {
+    if (songMeta.hasOwnProperty('__force_loops__')) {
+        let l = songMeta['__force_loops__'];
+        // Allow them to...
+
+        // ...set an exact number of loops...
+        if (typeof l == 'number' && !isNaN(l)) return l;
+
+        // ...or set a modifier (+2, loop 2 more, *2, loop 2x as many times, etc.)
+        else if (typeof l == 'string') {
+
+            if (l.startsWith('+')) {
+                l = Number(l.replace(/[+\s]/g, ''));
+                l = loopCount + l;
+            } else if (l.startsWith('-')) {
+                l = Number(l.replace(/[-\s]/g, ''));
+                l = loopCount - l;
+            } else if (l.startsWith('*')) {
+                l = Number(l.replace(/[*\s]/g, ''));
+                l = loopCount * l;
+            } else if (l.startsWith('/')) {
+                l = Number(l.replace(/[/\s]/g, ''));
+                l = loopCount / l;
+            } else if (l.startsWith('%')) {
+                l = Number(l.replace(/[%\s]/g, ''));
+                l = loopCount % l;
+            }
+
+            if (!isNaN(l)) return l;
+        }
+    }
+
+    // In all failure cases return the default
+    return loopCount;
+}
+
+
 module.exports = {
     makeMetadata,
     join,
     fileExists,
+    getLoopCount,
 };
